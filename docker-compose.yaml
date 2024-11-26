@@ -1,0 +1,39 @@
+version: '3'
+services:
+  # ui:
+  #   build:
+  #     context: ./ui
+  #     dockerfile: Dockerfile
+  #   container_name: ui-react
+  #   ports:
+  #     - 3000:3000
+  #   env_file:
+  #     - ./ui/.env
+  #   volumes:
+  #     - '.:/app'
+  #   networks:
+  #     - project-a
+  #   depends_on:
+  #     mysql:
+  #       condition: service_healthy
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    ports:
+      - 3306:3306
+    env_file:
+      - ./.env
+    volumes:
+      - mysqldata:/var/lib/mysql:delegated
+    networks:
+      - project-a
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 90s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+networks:
+  project-a:
+volumes:
+  mysqldata:
