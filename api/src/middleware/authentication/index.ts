@@ -7,9 +7,10 @@ export const authentication = (
   res: Response,
   next: NextFunction
 ) => {
-  if (req.headers.authorization) {
+  const jwtSecret = process.env.JWT_SECRET;
+  if (req.headers.authorization && jwtSecret) {
     const token = req.headers.authorization?.slice(7);
-    jwt.verify(token, "asdadasdd", (err, decoded) => {
+    jwt.verify(token, jwtSecret, (err, decoded) => {
       if (err) {
         const err = new ErrorResponse("401", "Unauthorized");
         res.status(401).json(err);

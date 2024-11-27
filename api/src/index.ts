@@ -1,8 +1,12 @@
 import express, { Express } from "express";
 import dotenv from "dotenv";
 import { router } from "./route/index";
+import { key } from "./helper/generateCrypto";
 
 dotenv.config();
+if (!process.env.JWT_SECRET) {
+  key();
+}
 
 const app: Express = express();
 const port = process.env.PORT || 3000;

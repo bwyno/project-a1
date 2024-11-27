@@ -4,8 +4,8 @@ import { ErrorResponse } from "../../response/errorResponse";
 import bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken";
 
-const generateToken = async (data: any) => {
-  return jwt.sign(data, "asdadasdd", { expiresIn: "1d" });
+const generateToken = async (data: any, secret: string) => {
+  return jwt.sign(data, secret, { expiresIn: "1d" });
 };
 
 export const signIn = async (
@@ -13,7 +13,7 @@ export const signIn = async (
   res: Response,
   next: NextFunction
 ) => {
-  var generatedToken;
+  const jwtSecret = process.env.JWT_SECRET;
   const data = await prisma.user.findUnique({
     where: {
       username: req.body.username,
@@ -28,8 +28,8 @@ export const signIn = async (
       .then((result) => {
         return result;
       });
-    if (authenticate) {
-      const generatedToken = await generateToken(data);
+    if (authenticate && jwtSecret) {
+      const generatedToken = await generateToken(data, jwtSecret);
       res.json({ generatedToken });
     } else {
       const error = new ErrorResponse(
