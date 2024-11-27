@@ -17,5 +17,8 @@ export const authentication = (
         next();
       }
     });
+  } else {
+    const err = new ErrorResponse("500", "Internal Server Error");
+    res.status(500).json(err);
   }
 };
